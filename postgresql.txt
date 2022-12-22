@@ -1,0 +1,84 @@
+https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+while installing the software enable install pgadmin check box, if it unchecked
+
+Dont need stack builder
+
+
+
+what is postgreSQl
+PostgreSQL is an ORDBMS [Open-Source Object-Relational Database Management System]. It is used to store data securely;
+it is general-purpose object-realtional database management system.
+It supports both SQL and JSON for relational and non-relational queries for extensibility
+
+Why PostgreSQL is best for you?
+User-defined types
+Table inheritance
+Views, rules, subquery
+
+
+
+
+1. Data Definition Language(DDL) commands
+These commands are used to define the database structures.
+
+CREATE
+ALTER
+TRUNCATE
+DROP
+RENAME
+COMMENT
+2. Data Manipulation Language(DML) commands
+These commands are used to manipulate the data present in the database tables.
+
+INSERT
+SELECT
+UPDATE
+DELETE
+3. Data control language(DCL) commands
+These commands are used to define the authorizations of the database like giving right permissions to the users.
+
+GRANT
+REVOKE
+4. Transaction control Language(TCL) commands
+These commands are used to manage the changes made to the data by DML commands.
+
+COMMIT
+ROLLBACK
+SAVEPOINT
+
+
+
+
+
+
+
+
+
+-DDL-
+1-created database usermanagement;
+2-create table hired_canditidates;
+CREATE TABLE hired_candidates (
+  id int NOT NULL primary key,
+  first_name varchar(100) NOT NULL,
+  middle_name varchar(100) DEFAULT NULL,
+  last_name varchar(100) NOT NULL,
+  email varchar(50) NOT NULL,
+  mobile_num bigint(20) NOT NULL,
+  hired_city varchar(50) NOT NULL,
+  hired_date date NOT NULL,
+  degree varchar(100) NOT NULL,
+  aggr_per int DEFAULT NULL,
+  current_pincode int(11) DEFAULT NULL,
+  permanent_pincode int(11) DEFAULT NULL,
+  hired_lab varchar(20) DEFAULT NULL,
+  attitude_remark varchar(15) DEFAULT NULL,
+  communication_remark varchar(15) DEFAULT NULL,
+  knowledge_remark varchar(15) DEFAULT NULL,
+  status varchar(20) NOT NULL,
+  creator_stamp date DEFAULT NULL,
+  creator_user int(11) DEFAULT NULL,
+  PRIMARY KEY (id)
+) 
+
+
+
