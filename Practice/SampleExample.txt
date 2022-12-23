@@ -1,0 +1,22 @@
+1-create table user-userid,username,useraddress,pincode,mobilenuber,email
+2-create table products-productid,productname,productprice,quantity
+3-create table orderdeatils-orderid,userid,productid,quantity
+
+DDL--while proforming query used -create and drop
+1-created all tables used constraints like-primary key and foreign key,not null
+
+
+Constraints-
+In a database table, we can add rules to a column known as constraints. 
+These rules control the data that can be stored in a column.
+
+For example, if a column has NOT NULL constraint, it means the column cannot store NULL values.
+
+Constraint	 	Description
+NOT NULL		values cannot be null
+UNIQUE	values 		cannot match any older value
+PRIMARY KEY		used to uniquely identify a row
+FOREIGN KEY		references a row in another table
+CHECK			validates condition for new value
+DEFAULT			set default value if not passed
+CREATE INDEX		used to speedup the read process
