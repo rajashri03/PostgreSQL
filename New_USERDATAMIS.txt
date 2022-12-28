@@ -1,0 +1,176 @@
+1-Create date partition of user_engagement_mis
+
+
+so firstly i created user_engagement_mis table with date partition 
+CREATE TABLE user_engagement_MIS(
+id int NOT NULL,
+candidate_id int NOT NULL,
+Date  DATE NOT NULL,
+Cpu_Count int NOT NULL,
+Cpu_Working_Time real NOT NULL,
+Cpu_idle_Time real  NOT NULL,
+cpu_percent real  NOT NULL,
+Usage_cpu_count int NOT NULL,
+number_of_software_interrupts_since_boot real  NOT NULL,
+number_of_system_calls_since_boot int NOT NULL,
+number_of_interrupts_since_boot int NOT NULL,
+cpu_avg_load_over_1_min real  NOT NULL,
+cpu_avg_load_over_5_min   real  NOT NULL,
+cpu_avg_load_over_15_min real  NOT NULL,
+system_total_memory BIGINT NOT NULL,
+system_used_memory BIGINT NOT NULL,
+system_free_memory BIGINT NOT NULL,
+system_active_memory BIGINT NOT NULL,
+system_inactive_memory BIGINT NOT NULL,
+system_buffers_memory BIGINT NOT NULL,
+system_cached_memory BIGINT NOT NULL,
+system_shared_memory BIGINT NOT NULL,
+system_avalible_memory BIGINT NOT NULL,
+disk_total_memory BIGINT NOT NULL,
+disk_used_memory BIGINT NOT NULL,
+disk_free_memory BIGINT NOT NULL,
+disk_read_count BIGINT NOT NULL,
+disk_write_count BIGINT NOT NULL,
+disk_read_bytes BIGINT NOT NULL,
+disk_write_bytes BIGINT NOT NULL,
+time_spent_reading_from_disk BIGINT NOT NULL,
+time_spent_writing_to_disk BIGINT NOT NULL,
+time_spent_doing_actual_Input_Output BIGINT NOT NULL,
+number_of_bytes_sent BIGINT NOT NULL,
+number_of_bytes_received BIGINT NOT NULL,
+number_of_packets_sent BIGINT NOT NULL,
+number_of_packets_recived BIGINT NOT NULL,
+total_number_of_errors_while_receiving BIGINT NOT NULL,
+total_number_of_errors_while_sending BIGINT NOT NULL,
+total_number_of_incoming_packets_which_were_dropped BIGINT NOT NULL,
+total_number_of_outgoing_packets_which_were_dropped BIGINT NOT NULL,
+boot_time varchar(100) NOT NULL,
+keyboard real NOT NULL,
+mouse int NOT NULL,
+technology varchar(100) NOT NULL,
+files_changed int NOT NULL,
+  CONSTRAINT FK_user_engagemnt_mis_candidate_id FOREIGN KEY(candidate_id) REFERENCES fellowship_candidates(id)
+) partition by range (Date);
+
+
+
+
+--if i am trying to add date after 2019 so it will show some msg like-ERROR:  no partition of relation "user_engagement_mis" found for row
+DETAIL:  Partition key of the failing row contains (date) = (2022-12-12).
+SQL state: 23514
+
+create table users_datewise_partition PARTITION OF user_engagement_MIS for values from ('2019-01-01') To ('2019-12-31');
+
+
+
+
+2)Stored procedure for user_engagement_mis table
+
+
+CREATE or replace PROCEDURE InsertData
+(
+--fellowship cndidate
+fid   int   ,first_name varchar(200),middle_name varchar(200),last_name varchar(200),
+email varchar(200),mobile_num bigint,hired_city varchar(200),hired_date date,degree varchar(200),aggr_per int,current_pincode int,
+permanent_pincode  int,hired_lab   varchar(200),attitute_remark   varchar(200),communication_remark  varchar(200),
+knowledge_remark   varchar(200),birth_date  date,is_birth_date_verified  int,parent_name  varchar(200),parent_occupation varchar(200),
+parent_mobile_num bigint,parent_annual_sal bigint,local_addr  varchar(200),permanent_addr  varchar(200),
+photo_path  varchar(200),joining_date   date,candidate_status  varchar(200),personal_info_filled int,bank_info_filled  int,
+educational_info_filled int,doc_status    varchar(200),remark   varchar(200),creator_stamp date,creator_user int
+,
+--userMIS
+uid int,candidate_id int,Date_Time  DATE ,Cpu_Count int ,Cpu_Working_Time real ,Cpu_idle_Time real ,cpu_percent real ,
+Usage_cpu_count int ,number_of_software_interrupts_since_boot real ,number_of_system_calls_since_boot int ,
+number_of_interrupts_since_boot int ,cpu_avg_load_over_1_min real ,cpu_avg_load_over_5_min  real ,cpu_avg_load_over_15_min real ,
+system_total_memory real ,system_used_memory real,system_free_memory real ,system_active_memory real ,system_inactive_memory real,
+system_buffers_memory real,system_cached_memory real ,system_shared_memory real ,system_avalible_memory real ,
+disk_total_memory real,disk_used_memory real ,disk_free_memory real ,disk_read_count real ,disk_write_count real,
+disk_read_bytes real ,disk_write_bytes real ,time_spent_reading_from_disk real,time_spent_writing_to_disk real,
+time_spent_doing_actual_Input_Output real,number_of_bytes_sent real ,number_of_bytes_received real ,
+number_of_packets_sent real ,number_of_packets_recived real ,total_number_of_errors_while_receiving real ,
+total_number_of_errors_while_sending real ,total_number_of_incoming_packets_which_were_dropped real ,
+total_number_of_outgoing_packets_which_were_dropped real ,boot_time varchar(100),keyboard real,mouse int ,
+technology varchar(100),files_changed int)
+LANGUAGE SQL
+
+BEGIN ATOMIC
+
+--fellowship insert
+insert into fellowship_candidates values(fid,first_name,middle_name,last_name,email,mobile_num,hired_city,hired_date,degree,aggr_per,current_pincode,permanent_pincode,hired_lab,attitute_remark,communication_remark,knowledge_remark,birth_date,
+										 											is_birth_date_verified ,parent_name,parent_occupation,parent_mobile_num,parent_annual_sal,local_addr,permanent_addr,photo_path,joining_date,candidate_status,personal_info_filled,bank_info_filled,educational_info_filled,doc_status,remark,creator_stamp,creator_user )RETURNING fid;
+ --user_enagagement_mis
+insert into user_engagement_mis values(uid,fid,Date_Time  ,Cpu_Count ,Cpu_Working_Time ,Cpu_idle_Time ,cpu_percent  ,Usage_cpu_count ,number_of_software_interrupts_since_boot ,number_of_system_calls_since_boot ,number_of_interrupts_since_boot ,cpu_avg_load_over_1_min ,cpu_avg_load_over_5_min  ,cpu_avg_load_over_15_min ,system_total_memory ,system_used_memory ,system_free_memory ,system_active_memory ,system_inactive_memory ,system_buffers_memory ,system_cached_memory ,system_shared_memory ,system_avalible_memory ,disk_total_memory ,disk_used_memory ,disk_free_memory ,disk_read_count ,disk_write_count,disk_read_bytes ,disk_write_bytes ,time_spent_reading_from_disk ,time_spent_writing_to_disk ,time_spent_doing_actual_Input_Output ,number_of_bytes_sent ,number_of_bytes_received,number_of_packets_sent ,number_of_packets_recived ,total_number_of_errors_while_receiving,total_number_of_errors_while_sending ,total_number_of_incoming_packets_which_were_dropped,total_number_of_outgoing_packets_which_were_dropped ,boot_time ,keyboard ,mouse ,technology ,files_changed);
+
+END;
+
+
+
+
+
+/******Excute proc
+
+CALL InsertData(4,'rajashri','sanjay','telvekar','rajashri@gmail.com',8787677767,'pune',
+				'2022-12-12','BE',68,45678,87654,'test','B','Good','Good','03-03-1996',0,'Sanjay','ITI',
+				8766745676,120000,'Kagal','Kagal','test','2023-01-01','test',4,1,1,'well','A','2021-1-1',1,2,4,
+				'2019-01-01'  ,2 ,2983.3 ,2666444.45 ,45.0  ,2 ,3.555 ,0 ,343343 ,0 ,0.01  ,0 ,345345345 ,323345345
+				,88734534 ,34534534535 ,3543533453 ,34543485845 ,34535345 ,45645645646 ,45645645645 ,657567575 ,
+				567575756757 ,45645646 ,6576556 ,5656,567567567 ,567567 ,567567 ,575756765 ,567567567 ,5675676 ,
+				4,4 ,3 ,3,0 ,123,0 ,'1Day12:23:23' ,0 ,0 ,'andriod' ,1);
+
+
+
+
+6)- Create trigger to update User Engagement Summary table whenever 
+insert happened on User Engagement MIS table
+
+
+************created function**************
+
+CREATE or replace FUNCTION increment_c() RETURNS trigger AS $trigger_ops1$
+    BEGIN
+	IF EXISTS (SELECT count FROM user_engagement_summary WHERE summery_id =1 )then
+    update user_engagement_summary set count=count+1 where summery_id=1;
+	ELSE
+    INSERT into user_engagement_summary values (1,1,current_timestamp);
+     END IF;
+        RETURN New;
+    END;
+$trigger_ops1$ LANGUAGE plpgsql;
+
+
+************created trigger****************
+CREATE TRIGGER trigger_ops1
+  AFTER INSERT
+  ON user_engagement_mis
+  FOR EACH ROW
+  EXECUTE PROCEDURE increment_c();
+
+
+************Inserting values******************
+so after insert user_engagement_summary  will update 
+insert into user_engagement_mis values(9,4,
+				'2019-01-01'  ,2 ,2983.3 ,2666444.45 ,45.0  ,2 ,3.555 ,0 ,343343 ,0 ,0.01  ,0 ,345345345 ,323345345
+				,88734534 ,34534534535 ,3543533453 ,34543485845 ,34535345 ,45645645646 ,45645645645 ,657567575 ,
+				567575756757 ,45645646 ,6576556 ,5656,567567567 ,567567 ,567567 ,575756765 ,567567567 ,5675676 ,
+				4,4 ,3 ,3,0 ,123,0 ,'1Day12:23:23' ,0 ,0 ,'andriod' ,1)
+
+
+
+
+*************delete 
+ CREATE or replace FUNCTION decrement_c() RETURNS trigger AS $deletetrigger$
+    BEGIN
+	IF EXISTS (SELECT count FROM user_engagement_summary WHERE summery_id =1 )then
+    update user_engagement_summary set count=count-1 where summery_id=1;
+	ELSE
+    INSERT into user_engagement_summary values (1,1,current_timestamp);
+     END IF;
+        RETURN New;
+    END;
+$deletetrigger$ LANGUAGE plpgsql;
+
+CREATE TRIGGER deletetrigger
+  AFTER Delete
+  ON user_engagement_mis
+  FOR EACH ROW
+  EXECUTE PROCEDURE decrement_c();
