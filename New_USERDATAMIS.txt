@@ -174,3 +174,93 @@ CREATE TRIGGER deletetrigger
   ON user_engagement_mis
   FOR EACH ROW
   EXECUTE PROCEDURE decrement_c();
+
+
+
+
+
+
+
+
+
+********************************Used stored proc to insert data in multiple tables and then joining all tables together and used exception also
+
+
+
+ 
+ CREATE OR REPLACE PROCEDURE Insert_FellowshipCandidate_Details
+( 
+--fellowship_id
+emails varchar(200),
+
+--candidate_qualification
+	diploma int,degree_name varchar(10) ,is_degree_name_verified int ,employee_decipline varchar(100) ,
+  is_employee_decipline_verified int ,passing_year int,is_passing_year_verified int,aggr_per real ,final_year_per real ,
+  is_final_year_per_verified int,training_institute varchar(20) ,is_training_institute_verified int,training_duration_month int,
+  is_training_duration_month_verified int,other_training varchar(255) ,is_other_training_verified int,
+
+
+--candidates_education_det_check 
+  field_name int,is_verified int,lastupd_stamp timestamp ,lastupd_user int,creator_stamp timestamp,creator_user int,
+  
+  
+--candidates_personal_det_check 
+pfield_name int,p_is_verified int,p_lastupd_stamp timestamp,p_lastupd_user int,p_creator_stamp timestamp ,p_creator_user int,
+--candidate_bank_det
+ bname varchar(100),account_num int,is_account_num_verified int,ifsc_code varchar(20),is_ifsc_code_verified int,pan_number varchar(10) ,
+ is_pan_number_verified int,  addhaar_num int,is_addhaar_num_verified int ,b_creator_stamp timestamp ,b_creator_user int
+
+  )
+LANGUAGE plpgsql
+AS $$
+DECLARE
+ideuser int;
+  BEGIN
+ 
+	
+  BEGIN
+ 
+    select id into ideuser from fellowship_candidates  where email=emails;
+  
+	insert into candidate_qualification values(ideuser ,diploma ,degree_name  ,is_degree_name_verified  ,employee_decipline  ,
+	  is_employee_decipline_verified  ,passing_year ,is_passing_year_verified ,aggr_per  ,final_year_per  ,
+	  is_final_year_per_verified ,training_institute  ,is_training_institute_verified ,training_duration_month ,
+	  is_training_duration_month_verified ,other_training  ,is_other_training_verified);  
+  
+  insert into candidates_education_det_check values(ideuser,field_name,is_verified,lastupd_stamp  ,lastupd_user,creator_stamp,creator_user);
+  
+  insert into candidates_personal_det_check values(ideuser,pfield_name,p_is_verified ,p_lastupd_stamp ,p_lastupd_user ,p_creator_stamp  ,p_creator_user );
+  
+  insert into candidate_bank_det values(ideuser,bname,account_num,is_account_num_verified,ifsc_code,is_ifsc_code_verified ,pan_number ,
+ is_pan_number_verified,  addhaar_num,  is_addhaar_num_verified ,  b_creator_stamp  ,  b_creator_user );
+
+EXCEPTION WHEN Others THEN
+IF emails  LIKE '' THEN
+	RAISE EXCEPTION 'Dont pass empty values please enter email';
+END IF ;
+   	RAISE EXCEPTION '% -This email is not present', emails
+    USING HINT = 'Please check your E-mail format.';
+
+  COMMIT;
+ END;
+END;
+$$
+  
+  
+
+call Insert_FellowshipCandidate_Details('',
+1,'BE',1,'Good',1,202,0,65.7,71.7,0,'BIMAT','0',36,0,'Web development',0,
+1,1,'2021-2-2',2,'2021-1-1',1,
+1,1,'2021-2-2',2,'2021-1-1',1,
+'BOI',998888888,1,'ifsc_code',1 ,'pan_number' ,
+ 1,  87666666,  1 ,  '2021-1-1'  ,  1
+)
+
+
+
+
+select a.*,b.*,c.*,d.*,e.* from fellowship_candidates a inner join candidate_qualification b on a.id=b.candidate_id
+inner join candidates_education_det_check c on a.id=c.candidate_id
+inner join candidates_personal_det_check d on a.id=c.candidate_id
+inner join candidate_bank_det e on a.id=c.candidate_id
+select * from fellowship_candidates;
